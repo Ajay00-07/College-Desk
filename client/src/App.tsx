@@ -16,6 +16,7 @@ import DocumentsPage from "@/pages/documents";
 import ApprovalsPage from "@/pages/approvals";
 import TasksPage from "@/pages/tasks";
 import AIAssistantPage from "@/pages/ai-assistant";
+import WorkflowLibraryPage from "@/pages/workflow-library";
 import NotFound from "@/pages/not-found";
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
@@ -87,6 +88,7 @@ function AppLayout() {
               <Route path="/attendance" component={AttendancePage} />
               <Route path="/documents" component={DocumentsPage} />
               <Route path="/approvals" component={ApprovalsPage} />
+              <Route path="/workflow-library" component={WorkflowLibraryPage} />
               <Route path="/tasks" component={TasksPage} />
               <Route path="/ai-assistant" component={AIAssistantPage} />
               <Route component={NotFound} />

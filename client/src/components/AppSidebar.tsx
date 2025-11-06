@@ -6,7 +6,8 @@ import {
   MessageSquare,
   ClipboardList,
   Settings,
-  LogOut
+  LogOut,
+  GitBranch
 } from "lucide-react";
 import {
   Sidebar,
@@ -34,6 +35,7 @@ export default function AppSidebar({ role }: AppSidebarProps) {
       { title: "Attendance", url: "/attendance", icon: Users },
       { title: "Documents", url: "/documents", icon: FileText },
       { title: "Approvals", url: "/approvals", icon: CheckSquare },
+      { title: "Workflows", url: "/workflow-library", icon: GitBranch },
       { title: "Task Tracker", url: "/tasks", icon: ClipboardList },
       { title: "AI Assistant", url: "/ai-assistant", icon: MessageSquare },
     ],
@@ -42,12 +44,14 @@ export default function AppSidebar({ role }: AppSidebarProps) {
       { title: "Attendance", url: "/attendance", icon: Users },
       { title: "Documents", url: "/documents", icon: FileText },
       { title: "Approvals", url: "/approvals", icon: CheckSquare },
+      { title: "Workflows", url: "/workflow-library", icon: GitBranch },
       { title: "AI Assistant", url: "/ai-assistant", icon: MessageSquare },
     ],
     student: [
       { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
       { title: "My Attendance", url: "/attendance", icon: Users },
       { title: "Documents", url: "/documents", icon: FileText },
+      { title: "Workflows", url: "/workflow-library", icon: GitBranch },
       { title: "My Requests", url: "/tasks", icon: ClipboardList },
       { title: "AI Assistant", url: "/ai-assistant", icon: MessageSquare },
     ],

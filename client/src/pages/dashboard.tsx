@@ -34,9 +34,14 @@ export default function DashboardPage() {
 
   return (
     <div className="space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold" data-testid="text-page-title">Dashboard</h1>
-        <p className="text-muted-foreground mt-1">Welcome back! Here's your overview.</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-3xl font-bold" data-testid="text-page-title">Dashboard</h1>
+          <p className="text-muted-foreground mt-1">Welcome back! Here's your overview.</p>
+        </div>
+        <div className="text-sm text-muted-foreground">
+          {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -91,9 +96,9 @@ export default function DashboardPage() {
 
         <div className="space-y-4">
           <h2 className="text-xl font-semibold">Quick Actions</h2>
-          <Card className="p-6 space-y-4">
+          <Card className="p-6 space-y-4 smooth-transition hover:shadow-lg shine-hover">
             <div className="space-y-2">
-              <div className="p-3 bg-primary/10 rounded-md w-fit">
+              <div className="p-3 bg-primary/10 rounded-lg w-fit smooth-transition group-hover:scale-110">
                 <FileText className="w-6 h-6 text-primary" />
               </div>
               <h3 className="font-semibold">Generate Document</h3>
@@ -106,9 +111,9 @@ export default function DashboardPage() {
             </div>
           </Card>
 
-          <Card className="p-6 space-y-4">
+          <Card className="p-6 space-y-4 smooth-transition hover:shadow-lg shine-hover">
             <div className="space-y-2">
-              <div className="p-3 bg-primary/10 rounded-md w-fit">
+              <div className="p-3 bg-primary/10 rounded-lg w-fit smooth-transition group-hover:scale-110">
                 <Calendar className="w-6 h-6 text-primary" />
               </div>
               <h3 className="font-semibold">Check Attendance</h3>

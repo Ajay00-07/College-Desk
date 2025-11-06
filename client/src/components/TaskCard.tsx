@@ -31,7 +31,7 @@ export default function TaskCard({
 
   return (
     <Card 
-      className="p-4 hover-elevate cursor-pointer transition-all" 
+      className="p-4 hover-elevate cursor-pointer smooth-transition hover:shadow-md" 
       onClick={() => setExpanded(!expanded)}
       data-testid={`card-task-${id}`}
     >

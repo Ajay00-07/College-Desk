@@ -21,34 +21,49 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen grid lg:grid-cols-2">
-      <div className="hidden lg:flex bg-primary/5 items-center justify-center p-12">
-        <div className="max-w-md space-y-6">
-          <div>
-            <h1 className="text-4xl font-bold mb-2">College Desk</h1>
+      <div className="hidden lg:flex bg-gradient-to-br from-primary/10 via-primary/5 to-background items-center justify-center p-12 relative overflow-hidden">
+        <div className="absolute inset-0 bg-grid-pattern opacity-5"></div>
+        <div className="max-w-md space-y-8 relative z-10">
+          <div className="space-y-2">
+            <h1 className="text-5xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+              College Desk
+            </h1>
             <p className="text-xl text-muted-foreground">Engineering College Edition</p>
           </div>
           <img 
             src={loginIllustration} 
             alt="College workflow automation" 
-            className="w-full rounded-lg"
+            className="w-full rounded-xl shadow-2xl smooth-transition hover:scale-105 float-animation"
           />
-          <div className="space-y-2 text-sm">
-            <p className="font-medium">AI-Powered Workflow Automation</p>
-            <ul className="space-y-1 text-muted-foreground">
-              <li>• Automated attendance management</li>
-              <li>• Intelligent document generation</li>
-              <li>• Streamlined approval workflows</li>
-              <li>• Compliance assistance</li>
+          <div className="space-y-4">
+            <p className="font-semibold text-lg">AI-Powered Workflow Automation</p>
+            <ul className="space-y-3 text-sm">
+              <li className="flex items-center gap-3 text-muted-foreground">
+                <div className="w-2 h-2 bg-primary rounded-full pulse-glow" />
+                Automated attendance management
+              </li>
+              <li className="flex items-center gap-3 text-muted-foreground">
+                <div className="w-2 h-2 bg-primary rounded-full pulse-glow" />
+                Intelligent document generation
+              </li>
+              <li className="flex items-center gap-3 text-muted-foreground">
+                <div className="w-2 h-2 bg-primary rounded-full pulse-glow" />
+                Streamlined approval workflows
+              </li>
+              <li className="flex items-center gap-3 text-muted-foreground">
+                <div className="w-2 h-2 bg-primary rounded-full pulse-glow" />
+                AI compliance assistance
+              </li>
             </ul>
           </div>
         </div>
       </div>
 
-      <div className="flex items-center justify-center p-8">
-        <Card className="w-full max-w-md p-8">
+      <div className="flex items-center justify-center p-8 bg-background">
+        <Card className="w-full max-w-md p-8 smooth-transition hover:shadow-xl">
           <div className="mb-8">
-            <h2 className="text-2xl font-bold">Welcome Back</h2>
-            <p className="text-sm text-muted-foreground mt-1">
+            <h2 className="text-3xl font-bold">Welcome Back</h2>
+            <p className="text-sm text-muted-foreground mt-2">
               Sign in to access your dashboard
             </p>
           </div>
@@ -94,13 +109,15 @@ export default function LoginPage() {
               />
             </div>
 
-            <Button type="submit" className="w-full" data-testid="button-login">
+            <Button type="submit" className="w-full smooth-transition" data-testid="button-login">
               Sign In
             </Button>
           </form>
 
-          <div className="mt-6 text-center text-sm text-muted-foreground">
-            <p>Demo credentials available for all roles</p>
+          <div className="mt-8 p-4 bg-muted/30 rounded-lg">
+            <p className="text-xs text-muted-foreground text-center">
+              <span className="font-semibold">Demo Access:</span> Use any username/password with your selected role
+            </p>
           </div>
         </Card>
       </div>
