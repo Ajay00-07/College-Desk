@@ -1,0 +1,231 @@
+Build a full-stack web application called College Desk (Engineering College Edition) using React (frontend) and Node.js/Express (backend) with PostgreSQL database.
+
+
+
+System Overview:
+
+College Desk is a Generative AI–powered workflow automation platform designed for engineering colleges to streamline attendance management, document creation, approvals, and compliance.
+
+
+
+Key Features:
+
+1. Role-Based Authentication
+
+   - Admin, Faculty, and Student login.
+
+   - Role-specific dashboards for task management and approval workflows.
+
+
+
+2. Attendance Management
+
+   - Direct, real-time integration with iONCudos for attendance data.
+
+   - Automatically marks students as present if HOD/Faculty approval is granted, even if the class teacher marked them absent.
+
+   - Identifies students below attendance thresholds.
+
+   
+
+3. Generative AI Document Creation
+
+   - AI automatically generates:
+
+     • Attendance shortage reports
+
+     • Condonation request letters
+
+     • Monthly attendance summaries
+
+   - Output format: downloadable PDF/Word.
+
+   - AI chat assistant allows users to generate or summarize reports on demand.
+
+   - Sample AI assistant prompts:
+
+     • Students: “Can I take leave for 3 days medical?” or “I have 68% attendance, can I write exams?”
+
+     • Faculty: “Can I condone attendance below 65%?” or “What is the project approval workflow?”
+
+     • Admin: “Generate attendance condonation approval letter for HOD” or “Draft circular for exam rescheduling.”
+
+
+
+4. Approval Workflow Automation
+
+   - Documents routed: Faculty → HOD → Principal.
+
+   - Digital Approve/Reject with audit trail.
+
+   - Real-time notifications for pending, approved, or rejected tasks.
+
+   - Task Tracker showing status of each request.
+
+
+
+5. Secure Record Storage
+
+   - Encrypted storage of all generated documents, approvals, and audit logs.
+
+   - Admin analytics and historical access.
+
+
+
+6. Compliance & Rule-Based Assistance
+
+   - AI Compliance Assistant trained on academic handbooks, attendance policies, examination rules, leave regulations, project approvals, and departmental workflows.
+
+   - Responds with rule citations and compliance suggestions.
+
+   - Generates official letters and documents with fields: Applicant Name, Department, Dates, Approval Authority, Compliance Status.
+
+   - Example: “Generate formal approval letter for student Priya Singh (ECE Dept) requesting condonation for 5% attendance shortage due to medical leave from 12–15 Sept, including reference to Attendance Rule 4.2.”
+
+
+
+7. Tech Stack
+
+   - Frontend: React
+
+   - Backend: Node.js/Express
+
+   - Database: PostgreSQL
+
+   - AI Model: OpenAI GPT API
+
+   - Authentication: JWT
+
+   - Styling: Tailwind CSS
+
+   - Deployment: Docker / Cloud
+
+
+
+8. Security
+
+   - Role-Based Access Control (RBAC)
+
+   - Encrypted document storage
+
+   - Full audit logging for transparency
+
+
+
+9. Expected Outcomes
+
+   - 80% reduction in time spent preparing attendance documents
+
+   - Error-free, standardized reports
+
+   - Faster digital approvals and transparent tracking
+
+   - Smart AI assistance for students, faculty, and admin
+
+   - Direct attendance updates in iONCudos with approval
+
+
+
+10. Architecture Overview
+
+User → Frontend (React)
+
+       ↓
+
+Backend (Node.js/Express)
+
+       ↓
+
+AI Engine (OpenAI GPT) → Generates documents & summaries
+
+       ↓
+
+Database (PostgreSQL) → Stores attendance, approvals, audit logs
+
+       ↓
+
+Frontend → Dashboards, notifications, AI chat assistant
+
+
+
+11. Prompt for Website Generation
+
+“Generate a responsive web app called College Desk with role-based login (Admin, Faculty, Student), dashboards showing pending/approved tasks, AI chat assistant for rule-based queries, document generator for approvals (attendance, leave, events, projects), task tracker for workflow status. Frontend: React + Tailwind CSS, Backend: Node.js/Express, OpenAI GPT integration for document creation, real-time notifications, and secure storage.”
+
+Build a full-stack web application called College Desk (Engineering College Edition) using React (frontend) and Node.js/Express (backend) with PostgreSQL database.
+
+System Overview:
+College Desk is a Generative AI–powered workflow automation platform designed for engineering colleges to streamline attendance management, document creation, approvals, and compliance.
+
+Key Features:
+1. Role-Based Authentication
+   - Admin, Faculty, and Student login.
+   - Role-specific dashboards for task management and approval workflows.
+
+2. Attendance Management
+   - Direct, real-time integration with iONCudos for attendance data.
+   - Automatically marks students as present if HOD/Faculty approval is granted, even if the class teacher marked them absent.
+   - Identifies students below attendance thresholds.
+   
+3. Generative AI Document Creation
+   - AI automatically generates:
+     • Attendance shortage reports
+     • Condonation request letters
+     • Monthly attendance summaries
+   - Output format: downloadable PDF/Word.
+   - AI chat assistant allows users to generate or summarize reports on demand.
+   - Sample AI assistant prompts:
+     • Students: “Can I take leave for 3 days medical?” or “I have 68% attendance, can I write exams?”
+     • Faculty: “Can I condone attendance below 65%?” or “What is the project approval workflow?”
+     • Admin: “Generate attendance condonation approval letter for HOD” or “Draft circular for exam rescheduling.”
+
+4. Approval Workflow Automation
+   - Documents routed: Faculty → HOD → Principal.
+   - Digital Approve/Reject with audit trail.
+   - Real-time notifications for pending, approved, or rejected tasks.
+   - Task Tracker showing status of each request.
+
+5. Secure Record Storage
+   - Encrypted storage of all generated documents, approvals, and audit logs.
+   - Admin analytics and historical access.
+
+6. Compliance & Rule-Based Assistance
+   - AI Compliance Assistant trained on academic handbooks, attendance policies, examination rules, leave regulations, project approvals, and departmental workflows.
+   - Responds with rule citations and compliance suggestions.
+   - Generates official letters and documents with fields: Applicant Name, Department, Dates, Approval Authority, Compliance Status.
+   - Example: “Generate formal approval letter for student Priya Singh (ECE Dept) requesting condonation for 5% attendance shortage due to medical leave from 12–15 Sept, including reference to Attendance Rule 4.2.”
+
+7. Tech Stack
+   - Frontend: React
+   - Backend: Node.js/Express
+   - Database: PostgreSQL
+   - AI Model: OpenAI GPT API
+   - Authentication: JWT
+   - Styling: Tailwind CSS
+   - Deployment: Docker / Cloud
+
+8. Security
+   - Role-Based Access Control (RBAC)
+   - Encrypted document storage
+   - Full audit logging for transparency
+
+9. Expected Outcomes
+   - 80% reduction in time spent preparing attendance documents
+   - Error-free, standardized reports
+   - Faster digital approvals and transparent tracking
+   - Smart AI assistance for students, faculty, and admin
+   - Direct attendance updates in iONCudos with approval
+
+10. Architecture Overview
+User → Frontend (React)
+       ↓
+Backend (Node.js/Express)
+       ↓
+AI Engine (OpenAI GPT) → Generates documents & summaries
+       ↓
+Database (PostgreSQL) → Stores attendance, approvals, audit logs
+       ↓
+Frontend → Dashboards, notifications, AI chat assistant
+
+11. Prompt for Website Generation
+“Generate a responsive web app called College Desk with role-based login (Admin, Faculty, Student), dashboards showing pending/approved tasks, AI chat assistant for rule-based queries, document generator for approvals (attendance, leave, events, projects), task tracker for workflow status. Frontend: React + Tailwind CSS, Backend: Node.js/Express, OpenAI GPT integration for document creation, real-time notifications, and secure storage.”
