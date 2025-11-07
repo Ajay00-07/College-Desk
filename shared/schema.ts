@@ -54,11 +54,22 @@ export const notifications = pgTable("notifications", {
   createdAt: timestamp("created_at").defaultNow(),
 });
 
+export const attendanceDocuments = pgTable("attendance_documents", {
+  id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
+  studentId: varchar("student_id").notNull(),
+  fileName: text("file_name").notNull(),
+  filePath: text("file_path").notNull(),
+  fileType: text("file_type").notNull(),
+  uploadedAt: timestamp("uploaded_at").defaultNow(),
+  status: text("status").notNull().default("pending"),
+});
+
 export const insertUserSchema = createInsertSchema(users).omit({ id: true });
 export const insertStudentSchema = createInsertSchema(students).omit({ id: true });
 export const insertDocumentSchema = createInsertSchema(documents).omit({ id: true, createdAt: true });
 export const insertApprovalSchema = createInsertSchema(approvals).omit({ id: true, createdAt: true, updatedAt: true });
 export const insertNotificationSchema = createInsertSchema(notifications).omit({ id: true, createdAt: true });
+export const insertAttendanceDocumentSchema = createInsertSchema(attendanceDocuments).omit({ id: true, uploadedAt: true });
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;
@@ -70,3 +81,5 @@ export type InsertApproval = z.infer<typeof insertApprovalSchema>;
 export type Approval = typeof approvals.$inferSelect;
 export type InsertNotification = z.infer<typeof insertNotificationSchema>;
 export type Notification = typeof notifications.$inferSelect;
+export type InsertAttendanceDocument = z.infer<typeof insertAttendanceDocumentSchema>;
+export type AttendanceDocument = typeof attendanceDocuments.$inferSelect;

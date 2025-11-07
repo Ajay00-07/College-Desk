@@ -3,24 +3,34 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import loginIllustration from "@assets/generated_images/College_workflow_automation_illustration_3112c521.png";
 import { useLocation } from "wouter";
 import { useAuth } from "@/lib/auth-context";
 
-export default function LoginPage() {
+export default function SignupPage() {
   const [, setLocation] = useLocation();
-  const { login, isLoading, error } = useAuth();
+  const { signup, isLoading, error } = useAuth();
+  const [name, setName] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState<string>("");
+  const [department, setDepartment] = useState("");
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await login(username, password);
+      await signup({
+        name,
+        username,
+        password,
+        role,
+        department: role === "student" ? department : undefined,
+      });
       setLocation("/dashboard");
     } catch (error) {
       // Error is handled by the auth context
-      console.error('Login failed:', error);
+      console.error('Signup failed:', error);
     }
   };
 
@@ -41,23 +51,23 @@ export default function LoginPage() {
             className="w-full rounded-xl shadow-2xl smooth-transition hover:scale-105 float-animation"
           />
           <div className="space-y-4">
-            <p className="font-semibold text-lg">AI-Powered Workflow Automation</p>
+            <p className="font-semibold text-lg">Join Our Community</p>
             <ul className="space-y-3 text-sm">
               <li className="flex items-center gap-3 text-muted-foreground">
                 <div className="w-2 h-2 bg-primary rounded-full pulse-glow" />
-                Automated attendance management
+                Create your account to get started
               </li>
               <li className="flex items-center gap-3 text-muted-foreground">
                 <div className="w-2 h-2 bg-primary rounded-full pulse-glow" />
-                Intelligent document generation
+                Access personalized dashboards
               </li>
               <li className="flex items-center gap-3 text-muted-foreground">
                 <div className="w-2 h-2 bg-primary rounded-full pulse-glow" />
-                Streamlined approval workflows
+                Manage your academic workflows
               </li>
               <li className="flex items-center gap-3 text-muted-foreground">
                 <div className="w-2 h-2 bg-primary rounded-full pulse-glow" />
-                AI compliance assistance
+                Connect with faculty and admins
               </li>
             </ul>
           </div>
@@ -67,9 +77,9 @@ export default function LoginPage() {
       <div className="flex items-center justify-center p-8 bg-background">
         <Card className="w-full max-w-md p-8 smooth-transition hover:shadow-xl">
           <div className="mb-8">
-            <h2 className="text-3xl font-bold">Welcome Back</h2>
+            <h2 className="text-3xl font-bold">Create Account</h2>
             <p className="text-sm text-muted-foreground mt-2">
-              Sign in to access your dashboard
+              Sign up to join College Desk
             </p>
           </div>
 
@@ -79,13 +89,27 @@ export default function LoginPage() {
             </div>
           )}
 
-          <form onSubmit={handleLogin} className="space-y-6">
+          <form onSubmit={handleSignup} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="name">Full Name</Label>
+              <Input
+                id="name"
+                type="text"
+                placeholder="Enter your full name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                disabled={isLoading}
+                data-testid="input-name"
+              />
+            </div>
+
             <div className="space-y-2">
               <Label htmlFor="username">Username</Label>
               <Input
                 id="username"
                 type="text"
-                placeholder="Enter your username"
+                placeholder="Choose a username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
@@ -95,11 +119,41 @@ export default function LoginPage() {
             </div>
 
             <div className="space-y-2">
+              <Label htmlFor="role">Role</Label>
+              <Select value={role} onValueChange={setRole} required disabled={isLoading}>
+                <SelectTrigger id="role" data-testid="select-role">
+                  <SelectValue placeholder="Select your role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="admin">Admin</SelectItem>
+                  <SelectItem value="faculty">Faculty</SelectItem>
+                  <SelectItem value="student">Student</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {role === "student" && (
+              <div className="space-y-2">
+                <Label htmlFor="department">Department</Label>
+                <Input
+                  id="department"
+                  type="text"
+                  placeholder="Enter your department"
+                  value={department}
+                  onChange={(e) => setDepartment(e.target.value)}
+                  required
+                  disabled={isLoading}
+                  data-testid="input-department"
+                />
+              </div>
+            )}
+
+            <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
                 type="password"
-                placeholder="Enter your password"
+                placeholder="Create a password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
@@ -108,22 +162,22 @@ export default function LoginPage() {
               />
             </div>
 
-            <Button type="submit" className="w-full smooth-transition" disabled={isLoading} data-testid="button-login">
-              {isLoading ? "Signing In..." : "Sign In"}
+            <Button type="submit" className="w-full smooth-transition" disabled={isLoading} data-testid="button-signup">
+              {isLoading ? "Creating Account..." : "Sign Up"}
             </Button>
           </form>
 
           <div className="mt-6 text-center">
             <p className="text-sm text-muted-foreground">
-              Don't have an account?{" "}
+              Already have an account?{" "}
               <button
                 type="button"
-                onClick={() => setLocation("/signup")}
+                onClick={() => setLocation("/")}
                 className="text-primary hover:underline font-medium"
                 disabled={isLoading}
-                data-testid="link-signup"
+                data-testid="link-login"
               >
-                Sign Up
+                Sign In
               </button>
             </p>
           </div>

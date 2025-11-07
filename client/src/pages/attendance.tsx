@@ -3,7 +3,11 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Search, Download, Filter } from "lucide-react";
+import { Search, Download, Filter, Upload } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { useAuth } from "@/lib/auth-context";
+import { toast } from "sonner";
 import {
   Table,
   TableBody,
@@ -26,6 +30,9 @@ interface StudentAttendance {
 
 export default function AttendancePage() {
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const { user } = useAuth();
 
   const students: StudentAttendance[] = [
     { id: "1", rollNumber: "21ECE045", name: "Priya Singh", department: "ECE", semester: 6, percentage: 68, classesAttended: 68, totalClasses: 100 },
@@ -39,6 +46,50 @@ export default function AttendancePage() {
     if (percentage >= 75) return { label: "Good", className: "bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/20" };
     if (percentage >= 65) return { label: "Below Threshold", className: "bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/20" };
     return { label: "Critical", className: "bg-red-500/10 text-red-700 dark:text-red-400 border-red-500/20" };
+  };
+
+  const handleFileUpload = async (studentId: string) => {
+    if (!selectedFile) {
+      toast.error("Please select a file to upload");
+      return;
+    }
+
+    // Client-side validation
+    const allowedTypes = ["application/pdf", "image/jpeg", "image/jpg", "image/png"];
+    if (!allowedTypes.includes(selectedFile.type)) {
+      toast.error("Only PDF, JPG, JPEG, and PNG files are allowed");
+      return;
+    }
+
+    if (selectedFile.size > 5 * 1024 * 1024) {
+      toast.error("File size must be less than 5MB");
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("document", selectedFile);
+      formData.append("studentId", studentId);
+
+      const response = await fetch("/api/attendance/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        toast.success("Document uploaded successfully");
+        setSelectedFile(null);
+      } else {
+        const error = await response.json();
+        toast.error(error.error || "Failed to upload document");
+      }
+    } catch (error) {
+      console.error("Upload error:", error);
+      toast.error("Failed to upload document");
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   return (
@@ -105,14 +156,53 @@ export default function AttendancePage() {
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      <Button 
-                        variant="ghost" 
-                        size="sm"
-                        onClick={() => console.log('View details:', student.id)}
-                        data-testid={`button-view-${student.id}`}
-                      >
-                        View Details
-                      </Button>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => console.log('View details:', student.id)}
+                          data-testid={`button-view-${student.id}`}
+                        >
+                          View Details
+                        </Button>
+                        {user?.role === 'student' && user.id === student.id && (
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button variant="outline" size="sm">
+                                <Upload className="w-4 h-4 mr-2" />
+                                Upload Document
+                              </Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                              <DialogHeader>
+                                <DialogTitle>Upload Attendance Document</DialogTitle>
+                              </DialogHeader>
+                              <div className="space-y-4">
+                                <div>
+                                  <Label htmlFor="file-upload">Select Document</Label>
+                                  <Input
+                                    id="file-upload"
+                                    type="file"
+                                    accept=".pdf,.jpg,.jpeg,.png"
+                                    onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
+                                    className="mt-1"
+                                  />
+                                  <p className="text-sm text-muted-foreground mt-1">
+                                    Accepted formats: PDF, JPG, JPEG, PNG (max 5MB)
+                                  </p>
+                                </div>
+                                <Button
+                                  onClick={() => handleFileUpload(student.id)}
+                                  disabled={!selectedFile || isUploading}
+                                  className="w-full"
+                                >
+                                  {isUploading ? "Uploading..." : "Upload"}
+                                </Button>
+                              </div>
+                            </DialogContent>
+                          </Dialog>
+                        )}
+                      </div>
                     </TableCell>
                   </TableRow>
                 );

@@ -1,8 +1,8 @@
-import { 
-  LayoutDashboard, 
-  Users, 
-  FileText, 
-  CheckSquare, 
+import {
+  LayoutDashboard,
+  Users,
+  FileText,
+  CheckSquare,
   MessageSquare,
   ClipboardList,
   Settings,
@@ -21,6 +21,7 @@ import {
   SidebarFooter,
 } from "@/components/ui/sidebar";
 import { Link, useLocation } from "wouter";
+import { useAuth } from "@/lib/auth-context";
 
 interface AppSidebarProps {
   role: "admin" | "faculty" | "student";
@@ -28,6 +29,7 @@ interface AppSidebarProps {
 
 export default function AppSidebar({ role }: AppSidebarProps) {
   const [location] = useLocation();
+  const { logout } = useAuth();
 
   const menuItems = {
     admin: [
@@ -103,8 +105,11 @@ export default function AppSidebar({ role }: AppSidebarProps) {
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton 
-              onClick={() => console.log('Logout clicked')}
+            <SidebarMenuButton
+              onClick={() => {
+                logout();
+                window.location.href = "/";
+              }}
               data-testid="button-logout"
             >
               <LogOut className="w-4 h-4" />

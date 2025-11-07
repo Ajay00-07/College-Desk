@@ -5,11 +5,13 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { ThemeProvider } from "@/lib/theme-provider";
+import { AuthProvider, useAuth } from "@/lib/auth-context";
 import ThemeToggle from "@/components/ThemeToggle";
 import NotificationPanel from "@/components/NotificationPanel";
 import AIChat from "@/components/AIChat";
 import AppSidebar from "@/components/AppSidebar";
 import LoginPage from "@/pages/login";
+import SignupPage from "@/pages/signup";
 import DashboardPage from "@/pages/dashboard";
 import AttendancePage from "@/pages/attendance";
 import DocumentsPage from "@/pages/documents";
@@ -18,12 +20,11 @@ import TasksPage from "@/pages/tasks";
 import AIAssistantPage from "@/pages/ai-assistant";
 import WorkflowLibraryPage from "@/pages/workflow-library";
 import NotFound from "@/pages/not-found";
-import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 
 function AppLayout() {
   const [location] = useLocation();
-  const [userRole] = useState<"admin" | "faculty" | "student">("admin");
+  const { user, isAuthenticated } = useAuth();
 
   const notifications = [
     {
@@ -53,24 +54,27 @@ function AppLayout() {
     "--sidebar-width-icon": "3rem",
   };
 
-  if (location === "/") {
+  if (!isAuthenticated) {
+    if (location === "/signup") {
+      return <SignupPage />;
+    }
     return <LoginPage />;
   }
 
   return (
     <SidebarProvider style={sidebarStyle as React.CSSProperties}>
       <div className="flex h-screen w-full">
-        <AppSidebar role={userRole} />
+        <AppSidebar role={user?.role || "admin"} />
         
         <div className="flex flex-col flex-1 overflow-hidden">
           <header className="flex items-center justify-between p-4 border-b bg-background">
             <div className="flex items-center gap-4">
               <SidebarTrigger data-testid="button-sidebar-toggle" />
               <Badge variant="outline" className="hidden md:flex">
-                {userRole.toUpperCase()}
+                {user?.role.toUpperCase()}
               </Badge>
             </div>
-            
+
             <div className="flex items-center gap-2">
               <NotificationPanel
                 notifications={notifications}
@@ -107,8 +111,10 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="light">
         <TooltipProvider>
-          <AppLayout />
-          <Toaster />
+          <AuthProvider>
+            <AppLayout />
+            <Toaster />
+          </AuthProvider>
         </TooltipProvider>
       </ThemeProvider>
     </QueryClientProvider>
