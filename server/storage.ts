@@ -14,6 +14,7 @@ export interface IStorage {
   createUser(user: InsertUser): Promise<User>;
   createAttendanceDocument(doc: InsertAttendanceDocument): Promise<AttendanceDocument>;
   getAttendanceDocumentsByStudent(studentId: string): Promise<AttendanceDocument[]>;
+  validatePassword(identifier: string, password: string): Promise<User | null>;
 }
 
 export class MemStorage implements IStorage {
@@ -37,20 +38,30 @@ export class MemStorage implements IStorage {
 
   async createUser(insertUser: InsertUser): Promise<User> {
     const id = randomUUID();
-    const user: User = { ...insertUser, id, department: insertUser.department ?? null };
+    const user: User = { ...insertUser, id, department: insertUser.department ?? null, role: insertUser.role ?? "student" };
     this.users.set(id, user);
     return user;
   }
 
   async createAttendanceDocument(insertDoc: InsertAttendanceDocument): Promise<AttendanceDocument> {
     const id = randomUUID();
-    const doc: AttendanceDocument = { ...insertDoc, id, uploadedAt: new Date() };
+    const doc: AttendanceDocument = { ...insertDoc, id, uploadedAt: new Date(), status: insertDoc.status || "pending" };
     this.attendanceDocuments.set(id, doc);
     return doc;
   }
 
   async getAttendanceDocumentsByStudent(studentId: string): Promise<AttendanceDocument[]> {
     return Array.from(this.attendanceDocuments.values()).filter(doc => doc.studentId === studentId);
+  }
+
+  async validatePassword(identifier: string, password: string): Promise<User | null> {
+    const user = Array.from(this.users.values()).find(
+      (user) => user.username === identifier,
+    );
+    if (!user) return null;
+
+    // For MemStorage, passwords are stored in plain text
+    return user.password === password ? user : null;
   }
 }
 
@@ -84,8 +95,9 @@ export class DbStorage implements IStorage {
     return await db.select().from(attendanceDocuments).where(eq(attendanceDocuments.studentId, studentId));
   }
 
-  async validatePassword(username: string, password: string): Promise<User | null> {
-    const user = await this.getUserByUsername(username);
+  async validatePassword(identifier: string, password: string): Promise<User | null> {
+    const result = await db.select().from(users).where(eq(users.username, identifier)).limit(1);
+    const user = result[0];
     if (!user) return null;
 
     const isValid = await bcrypt.compare(password, user.password);

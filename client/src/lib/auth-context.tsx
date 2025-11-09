@@ -3,15 +3,16 @@ import React, { createContext, useContext, useState, useEffect, ReactNode } from
 interface User {
   id: string;
   username: string;
-  role: 'admin' | 'faculty' | 'student';
+  role: string;
   name: string;
   department?: string;
-}
+  enrollmentNumber: string;
+  }
 
 interface AuthContextType {
   user: User | null;
   login: (username: string, password: string) => Promise<void>;
-  signup: (userData: { name: string; username: string; password: string; role: string; department?: string }) => Promise<void>;
+  signup: (userData: { name: string; enrollmentNumber: string; password: string; department: string; role: string }) => Promise<void>;
   logout: () => void;
   isAuthenticated: boolean;
   isLoading: boolean;
@@ -50,7 +51,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   }, []);
 
-  const login = async (username: string, password: string) => {
+  const login = async (identifier: string, password: string) => {
     setIsLoading(true);
     setError(null);
     try {
@@ -59,15 +60,25 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ identifier, password }),
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
+        let errorData;
+        try {
+          errorData = await response.json();
+        } catch (e) {
+          throw new Error(`Login failed: ${response.status} ${response.statusText}`);
+        }
         throw new Error(errorData.error || 'Login failed');
       }
 
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch (e) {
+        throw new Error('Invalid response from server');
+      }
       setUser(data.user);
       localStorage.setItem('user', JSON.stringify(data.user));
     } catch (error) {
@@ -78,7 +89,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
-  const signup = async (userData: { name: string; username: string; password: string; role: string; department?: string }) => {
+  const signup = async (userData: { name: string; enrollmentNumber: string; password: string; department: string; role: string }) => {
     setIsLoading(true);
     setError(null);
     try {
@@ -91,11 +102,21 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       });
 
       if (!response.ok) {
-        const errorData = await response.json();
+        let errorData;
+        try {
+          errorData = await response.json();
+        } catch (e) {
+          throw new Error(`Signup failed: ${response.status} ${response.statusText}`);
+        }
         throw new Error(errorData.error || 'Signup failed');
       }
 
-      const data = await response.json();
+      let data;
+      try {
+        data = await response.json();
+      } catch (e) {
+        throw new Error('Invalid response from server');
+      }
       setUser(data.user);
       localStorage.setItem('user', JSON.stringify(data.user));
     } catch (error) {

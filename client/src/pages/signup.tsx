@@ -8,24 +8,43 @@ import loginIllustration from "@assets/generated_images/College_workflow_automat
 import { useLocation } from "wouter";
 import { useAuth } from "@/lib/auth-context";
 
-export default function SignupPage() {
+export default function SignupPage({ role: defaultRole }: { role?: string }) {
   const [, setLocation] = useLocation();
   const { signup, isLoading, error } = useAuth();
   const [name, setName] = useState("");
-  const [username, setUsername] = useState("");
+    const [enrollmentNumber, setEnrollmentNumber] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<string>("");
-  const [department, setDepartment] = useState("");
+  const [role, setRole] = useState<string>(() => {
+    // Check localStorage first, then fall back to defaultRole or "student"
+    const storedRole = localStorage.getItem('selectedRole');
+    return storedRole || defaultRole || "student";
+  });
+
+  const [department, setDepartment] = useState<string>(() => {
+    // Pre-fill department from localStorage if available
+    const storedDepartment = localStorage.getItem('selectedDepartment');
+    return storedDepartment || "";
+  });
+
+  // Auto-assign role based on department selection for admin users
+  const handleDepartmentChange = (dept: string) => {
+    setDepartment(dept);
+    if (role === "hod" || role === "dean" || role === "principal") {
+      // Keep the role as selected from admin portal
+      return;
+    }
+    // For student users, no special role assignment needed
+  };
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await signup({
         name,
-        username,
+        enrollmentNumber,
         password,
+        department,
         role,
-        department: role === "student" ? department : undefined,
       });
       setLocation("/dashboard");
     } catch (error) {
@@ -101,65 +120,68 @@ export default function SignupPage() {
                 required
                 disabled={isLoading}
                 data-testid="input-name"
+                className="transition-all duration-200 focus:scale-105 focus:shadow-md"
               />
             </div>
 
+            
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="enrollmentNumber">Enrollment Number</Label>
               <Input
-                id="username"
+                id="enrollmentNumber"
                 type="text"
-                placeholder="Choose a username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Enter your enrollment number"
+                value={enrollmentNumber}
+                onChange={(e) => setEnrollmentNumber(e.target.value)}
                 required
                 disabled={isLoading}
-                data-testid="input-username"
+                data-testid="input-enrollmentNumber"
+                className="transition-all duration-200 focus:scale-105 focus:shadow-md"
               />
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="role">Role</Label>
-              <Select value={role} onValueChange={setRole} required disabled={isLoading}>
-                <SelectTrigger id="role" data-testid="select-role">
-                  <SelectValue placeholder="Select your role" />
+              <Label htmlFor="department">Department</Label>
+              <Select value={department} onValueChange={handleDepartmentChange} disabled={isLoading}>
+                <SelectTrigger data-testid="select-department" className="transition-all duration-200 focus:scale-105 focus:shadow-md">
+                  <SelectValue placeholder="Select your department" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="admin">Admin</SelectItem>
-                  <SelectItem value="faculty">Faculty</SelectItem>
-                  <SelectItem value="student">Student</SelectItem>
+                  <SelectItem value="computer-science">Computer Science</SelectItem>
+                  <SelectItem value="electronics">Electronics</SelectItem>
+                  <SelectItem value="mechanical">Mechanical</SelectItem>
+                  <SelectItem value="civil">Civil</SelectItem>
+                  <SelectItem value="electrical">Electrical</SelectItem>
+                  <SelectItem value="information-technology">Information Technology</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
-            {role === "student" && (
-              <div className="space-y-2">
-                <Label htmlFor="department">Department</Label>
-                <Input
-                  id="department"
-                  type="text"
-                  placeholder="Enter your department"
-                  value={department}
-                  onChange={(e) => setDepartment(e.target.value)}
-                  required
-                  disabled={isLoading}
-                  data-testid="input-department"
-                />
-              </div>
-            )}
-
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                placeholder="Create a password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                disabled={isLoading}
-                data-testid="input-password"
-              />
+              <div className="relative">
+                <Input
+                  id="password"
+                  type="password"
+                  placeholder="Create a password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  disabled={isLoading}
+                  data-testid="input-password"
+                  className="transition-all duration-200 focus:scale-105 focus:shadow-md pr-10"
+                />
+                <button
+                  type="button"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700"
+                  onClick={() => {
+                    const input = document.getElementById('password') as HTMLInputElement;
+                    input.type = input.type === 'password' ? 'text' : 'password';
+                  }}
+                >
+                  👁️
+                </button>
+              </div>
             </div>
 
             <Button type="submit" className="w-full smooth-transition" disabled={isLoading} data-testid="button-signup">
@@ -172,12 +194,12 @@ export default function SignupPage() {
               Already have an account?{" "}
               <button
                 type="button"
-                onClick={() => setLocation("/")}
+                onClick={() => setLocation("/login")}
                 className="text-primary hover:underline font-medium"
                 disabled={isLoading}
                 data-testid="link-login"
               >
-                Sign In
+                Login
               </button>
             </p>
           </div>

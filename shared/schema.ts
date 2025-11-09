@@ -6,10 +6,11 @@ import { z } from "zod";
 export const users = pgTable("users", {
   id: varchar("id").primaryKey().default(sql`gen_random_uuid()`),
   username: text("username").notNull().unique(),
+  enrollmentNumber: text("enrollment_number").notNull(),
   password: text("password").notNull(),
-  role: text("role").notNull(),
   name: text("name").notNull(),
   department: text("department"),
+  role: text("role").notNull().default("student"),
 });
 
 export const students = pgTable("students", {

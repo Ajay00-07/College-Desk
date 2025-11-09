@@ -1,3 +1,4 @@
+
 import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
@@ -48,24 +49,25 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Authentication routes
   app.post("/api/auth/signup", async (req, res) => {
     try {
-      const { username, password, name, role, department } = req.body;
+      const { enrollmentNumber, password, name, department, role } = req.body;
 
-      if (!username || !password || !name || !role) {
+      if (!enrollmentNumber || !password || !name || !department || !role) {
         return res.status(400).json({ error: "Missing required fields" });
       }
 
       // Check if user already exists
-      const existingUser = await storage.getUserByUsername(username);
+      const existingUser = await storage.getUserByUsername(enrollmentNumber);
       if (existingUser) {
-        return res.status(400).json({ error: "Username already exists" });
+        return res.status(400).json({ error: "Enrollment number already exists" });
       }
 
       const user = await storage.createUser({
-        username,
+        username: enrollmentNumber,
+        enrollmentNumber,
         password,
         name,
-        role,
         department,
+        role,
       });
 
       // Remove password from response
@@ -79,13 +81,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.post("/api/auth/login", async (req, res) => {
     try {
-      const { username, password } = req.body;
+      const { identifier, password } = req.body;
 
-      if (!username || !password) {
-        return res.status(400).json({ error: "Username and password are required" });
+      if (!identifier || !password) {
+        return res.status(400).json({ error: "Identifier and password are required" });
       }
 
-      const user = await (storage as any).validatePassword(username, password);
+      const user = await storage.validatePassword(identifier, password);
       if (!user) {
         return res.status(401).json({ error: "Invalid credentials" });
       }

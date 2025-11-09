@@ -10,13 +10,13 @@ import { useAuth } from "@/lib/auth-context";
 export default function LoginPage() {
   const [, setLocation] = useLocation();
   const { login, isLoading, error } = useAuth();
-  const [username, setUsername] = useState("");
+  const [identifier, setIdentifier] = useState("");
   const [password, setPassword] = useState("");
-
+  
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await login(username, password);
+      await login(identifier, password);
       setLocation("/dashboard");
     } catch (error) {
       // Error is handled by the auth context
@@ -53,11 +53,11 @@ export default function LoginPage() {
               </li>
               <li className="flex items-center gap-3 text-muted-foreground">
                 <div className="w-2 h-2 bg-primary rounded-full pulse-glow" />
-                Streamlined approval workflows
+                Smart approval workflows
               </li>
               <li className="flex items-center gap-3 text-muted-foreground">
                 <div className="w-2 h-2 bg-primary rounded-full pulse-glow" />
-                AI compliance assistance
+                Real-time notifications
               </li>
             </ul>
           </div>
@@ -81,19 +81,19 @@ export default function LoginPage() {
 
           <form onSubmit={handleLogin} className="space-y-6">
             <div className="space-y-2">
-              <Label htmlFor="username">Username</Label>
+              <Label htmlFor="identifier">Enrollment Number</Label>
               <Input
-                id="username"
+                id="identifier"
                 type="text"
-                placeholder="Enter your username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Enter your enrollment number"
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
                 required
                 disabled={isLoading}
-                data-testid="input-username"
+                data-testid="input-identifier"
               />
             </div>
-
+            
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <Input

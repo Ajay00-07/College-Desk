@@ -32,6 +32,8 @@ export default function AttendancePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [showReviewModal, setShowReviewModal] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState<StudentAttendance | null>(null);
   const { user } = useAuth();
 
   const students: StudentAttendance[] = [
@@ -41,6 +43,11 @@ export default function AttendancePage() {
     { id: "4", rollNumber: "21MECH067", name: "Vikram Patel", department: "MECH", semester: 6, percentage: 65, classesAttended: 65, totalClasses: 100 },
     { id: "5", rollNumber: "21CSE112", name: "Neha Reddy", department: "CSE", semester: 6, percentage: 88, classesAttended: 88, totalClasses: 100 },
   ];
+
+  // Filter students based on user role
+  const filteredStudents = user?.role === 'student'
+    ? students.filter(student => student.rollNumber === user.enrollmentNumber)
+    : students;
 
   const getAttendanceStatus = (percentage: number) => {
     if (percentage >= 75) return { label: "Good", className: "bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/20" };
@@ -92,6 +99,11 @@ export default function AttendancePage() {
     }
   };
 
+  const handleReviewClick = (student: StudentAttendance) => {
+    setSelectedStudent(student);
+    setShowReviewModal(true);
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -136,7 +148,12 @@ export default function AttendancePage() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {students.map((student) => {
+              {filteredStudents
+                .filter((student) =>
+                  student.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                  student.rollNumber.toLowerCase().includes(searchQuery.toLowerCase())
+                )
+                .map((student) => {
                 const status = getAttendanceStatus(student.percentage);
                 return (
                   <TableRow key={student.id} data-testid={`row-student-${student.id}`}>
@@ -165,7 +182,16 @@ export default function AttendancePage() {
                         >
                           View Details
                         </Button>
-                        {user?.role === 'student' && user.id === student.id && (
+                        {user?.role === 'faculty' || user?.role === 'admin' ? (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleReviewClick(student)}
+                            data-testid={`button-review-${student.id}`}
+                          >
+                            Review
+                          </Button>
+                        ) : user?.role === 'student' && user.enrollmentNumber === student.rollNumber ? (
                           <Dialog>
                             <DialogTrigger asChild>
                               <Button variant="outline" size="sm">
@@ -201,7 +227,7 @@ export default function AttendancePage() {
                               </div>
                             </DialogContent>
                           </Dialog>
-                        )}
+                        ) : null}
                       </div>
                     </TableCell>
                   </TableRow>
@@ -211,6 +237,57 @@ export default function AttendancePage() {
           </Table>
         </div>
       </Card>
+
+      {/* Review Modal */}
+      <Dialog open={showReviewModal} onOpenChange={setShowReviewModal}>
+        <DialogContent className="max-w-2xl">
+          <DialogHeader>
+            <DialogTitle>Attendance Review - {selectedStudent?.name}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label className="text-sm font-medium">Roll Number</Label>
+                <p className="text-sm text-muted-foreground">{selectedStudent?.rollNumber}</p>
+              </div>
+              <div>
+                <Label className="text-sm font-medium">Department</Label>
+                <p className="text-sm text-muted-foreground">{selectedStudent?.department}</p>
+              </div>
+            </div>
+
+            <div>
+              <Label className="text-sm font-medium mb-2 block">Absent Days</Label>
+              <div className="space-y-2">
+                {/* Mock absent days data */}
+                {[
+                  { date: "2024-01-15", reason: "Medical Leave", document: "medical_certificate.pdf" },
+                  { date: "2024-01-22", reason: "Family Emergency", document: "emergency_letter.pdf" },
+                  { date: "2024-02-05", reason: "Sick Leave", document: "doctor_note.pdf" },
+                ].map((absent, index) => (
+                  <Card key={index} className="p-3">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <p className="font-medium text-sm">{absent.date}</p>
+                        <p className="text-sm text-muted-foreground">{absent.reason}</p>
+                      </div>
+                      <Button variant="outline" size="sm">
+                        View Document
+                      </Button>
+                    </div>
+                  </Card>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex gap-2 pt-4">
+              <Button onClick={() => setShowReviewModal(false)} className="flex-1">
+                Close
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         <Card className="p-4 border-l-4 border-green-500">

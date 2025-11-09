@@ -55,7 +55,7 @@ export default function AIChat({ suggestedPrompts = [] }: AIChatProps) {
     return (
       <Button
         size="icon"
-        className="fixed bottom-6 right-6 w-14 h-14 rounded-full shadow-lg"
+        className="fixed bottom-6 left-6 w-14 h-14 rounded-full shadow-lg"
         onClick={() => setIsOpen(true)}
         data-testid="button-open-chat"
       >
@@ -65,7 +65,7 @@ export default function AIChat({ suggestedPrompts = [] }: AIChatProps) {
   }
 
   return (
-    <Card className="fixed bottom-6 right-6 w-96 h-[500px] shadow-xl flex flex-col" data-testid="chat-panel">
+    <Card className="fixed bottom-6 left-6 w-96 h-[500px] shadow-xl flex flex-col" data-testid="chat-panel">
       <div className="p-4 border-b flex items-center justify-between">
         <div className="flex items-center gap-2">
           <MessageCircle className="w-5 h-5 text-primary" />

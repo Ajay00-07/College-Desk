@@ -9,9 +9,12 @@ import { AuthProvider, useAuth } from "@/lib/auth-context";
 import ThemeToggle from "@/components/ThemeToggle";
 import NotificationPanel from "@/components/NotificationPanel";
 import AIChat from "@/components/AIChat";
+import UserProfile from "@/components/UserProfile";
 import AppSidebar from "@/components/AppSidebar";
+import LandingPage from "@/pages/landing";
 import LoginPage from "@/pages/login";
 import SignupPage from "@/pages/signup";
+import AdminSelectionPage from "@/pages/AdminSelectionPage";
 import DashboardPage from "@/pages/dashboard";
 import AttendancePage from "@/pages/attendance";
 import DocumentsPage from "@/pages/documents";
@@ -19,6 +22,7 @@ import ApprovalsPage from "@/pages/approvals";
 import TasksPage from "@/pages/tasks";
 import AIAssistantPage from "@/pages/ai-assistant";
 import WorkflowLibraryPage from "@/pages/workflow-library";
+import SettingsPage from "@/pages/settings";
 import NotFound from "@/pages/not-found";
 import { Badge } from "@/components/ui/badge";
 
@@ -55,17 +59,32 @@ function AppLayout() {
   };
 
   if (!isAuthenticated) {
+    if (location === "/login") {
+      return <LoginPage />;
+    }
+    if (location === "/signup/student") {
+      return <SignupPage role="student" />;
+    }
+    if (location === "/signup/faculty") {
+      return <SignupPage role="faculty" />;
+    }
+    if (location === "/signup/admin") {
+      return <AdminSelectionPage />;
+    }
     if (location === "/signup") {
       return <SignupPage />;
     }
-    return <LoginPage />;
+    if (location === "/admin-selection") {
+      return <AdminSelectionPage />;
+    }
+    return <LandingPage />;
   }
 
   return (
     <SidebarProvider style={sidebarStyle as React.CSSProperties}>
       <div className="flex h-screen w-full">
-        <AppSidebar role={user?.role || "admin"} />
-        
+        <AppSidebar role={user?.role as "admin" | "faculty" | "student" || "student"} />
+
         <div className="flex flex-col flex-1 overflow-hidden">
           <header className="flex items-center justify-between p-4 border-b bg-background">
             <div className="flex items-center gap-4">
@@ -83,6 +102,7 @@ function AppLayout() {
                 onViewAll={() => console.log('View all')}
               />
               <ThemeToggle />
+              <UserProfile />
             </div>
           </header>
 
@@ -95,12 +115,17 @@ function AppLayout() {
               <Route path="/workflow-library" component={WorkflowLibraryPage} />
               <Route path="/tasks" component={TasksPage} />
               <Route path="/ai-assistant" component={AIAssistantPage} />
+              <Route path="/settings" component={SettingsPage} />
               <Route component={NotFound} />
             </Switch>
           </main>
         </div>
 
-        <AIChat suggestedPrompts={aiPrompts} />
+        {location !== "/ai-assistant" && (
+          <div className="fixed bottom-6 right-6 z-50">
+            <AIChat suggestedPrompts={aiPrompts} />
+          </div>
+        )}
       </div>
     </SidebarProvider>
   );

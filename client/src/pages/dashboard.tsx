@@ -3,8 +3,13 @@ import TaskCard from "@/components/TaskCard";
 import { FileText, Users, CheckCircle, Clock, Calendar } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/lib/auth-context";
+import { useLocation } from "wouter";
 
 export default function DashboardPage() {
+  const { user } = useAuth();
+  const [, setLocation] = useLocation();
+
   const tasks = [
     {
       id: "1",
@@ -65,12 +70,14 @@ export default function DashboardPage() {
           trend="+12 from last week"
           accentColor="border-green-500"
         />
-        <MetricCard
-          title="Active Students"
-          value={1250}
-          icon={Users}
-          accentColor="border-purple-500"
-        />
+        {user?.role !== 'student' && (
+          <MetricCard
+            title="Active Students"
+            value={1250}
+            icon={Users}
+            accentColor="border-purple-500"
+          />
+        )}
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -105,7 +112,7 @@ export default function DashboardPage() {
               <p className="text-sm text-muted-foreground">
                 Create attendance reports, condonation letters, or circulars
               </p>
-              <Button className="w-full" data-testid="button-generate-document">
+              <Button className="w-full" data-testid="button-generate-document" onClick={() => setLocation('/settings')}>
                 Generate
               </Button>
             </div>
@@ -116,11 +123,11 @@ export default function DashboardPage() {
               <div className="p-3 bg-primary/10 rounded-lg w-fit smooth-transition group-hover:scale-110">
                 <Calendar className="w-6 h-6 text-primary" />
               </div>
-              <h3 className="font-semibold">Check Attendance</h3>
+              <h3 className="font-semibold">Attendance Record Layout</h3>
               <p className="text-sm text-muted-foreground">
                 View attendance records and identify students below threshold
               </p>
-              <Button variant="outline" className="w-full" data-testid="button-check-attendance">
+              <Button variant="outline" className="w-full" data-testid="button-check-attendance" onClick={() => setLocation('/attendance')}>
                 View Records
               </Button>
             </div>
