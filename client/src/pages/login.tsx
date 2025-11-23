@@ -7,7 +7,11 @@ import loginIllustration from "@assets/generated_images/College_workflow_automat
 import { useLocation } from "wouter";
 import { useAuth } from "@/lib/auth-context";
 
-export default function LoginPage() {
+interface LoginPageProps {
+  role?: string;
+}
+
+export default function LoginPage({ role }: LoginPageProps) {
   const [, setLocation] = useLocation();
   const { login, isLoading, error } = useAuth();
   const [identifier, setIdentifier] = useState("");
@@ -68,9 +72,9 @@ export default function LoginPage() {
         <Card className="w-full max-w-md p-8 smooth-transition hover:shadow-xl">
           <div className="mb-8">
             <h2 className="text-3xl font-bold">Welcome Back</h2>
-            <p className="text-sm text-muted-foreground mt-2">
-              Sign in to access your dashboard
-            </p>
+              <p className="text-sm text-muted-foreground mt-2">
+                Sign in to access your dashboard for {role?.toUpperCase() || "User"}
+              </p>
           </div>
 
           {error && (

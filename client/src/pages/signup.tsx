@@ -8,7 +8,11 @@ import loginIllustration from "@assets/generated_images/College_workflow_automat
 import { useLocation } from "wouter";
 import { useAuth } from "@/lib/auth-context";
 
-export default function SignupPage({ role: defaultRole }: { role?: string }) {
+interface SignupPageProps {
+  role?: string;
+}
+
+export default function SignupPage({ role: defaultRole }: SignupPageProps) {
   const [, setLocation] = useLocation();
   const { signup, isLoading, error } = useAuth();
   const [name, setName] = useState("");
@@ -98,7 +102,7 @@ export default function SignupPage({ role: defaultRole }: { role?: string }) {
           <div className="mb-8">
             <h2 className="text-3xl font-bold">Create Account</h2>
             <p className="text-sm text-muted-foreground mt-2">
-              Sign up to join College Desk
+              Sign up to join College Desk as {role?.toUpperCase() || "User"}
             </p>
           </div>
 
