@@ -14,10 +14,6 @@ export default function AdminSelectionPage() {
       color: "from-blue-500 to-blue-600",
       bgColor: "bg-blue-50 dark:bg-blue-950/20",
       role: "hod",
-      onClick: () => {
-        localStorage.setItem('selectedRole', 'hod');
-        setLocation("/signup/admin");
-      }
     },
     {
       title: "Dean",
@@ -26,10 +22,6 @@ export default function AdminSelectionPage() {
       color: "from-green-500 to-green-600",
       bgColor: "bg-green-50 dark:bg-green-950/20",
       role: "dean",
-      onClick: () => {
-        localStorage.setItem('selectedRole', 'dean');
-        setLocation("/signup/admin");
-      }
     },
     {
       title: "Principal",
@@ -38,12 +30,14 @@ export default function AdminSelectionPage() {
       color: "from-purple-500 to-purple-600",
       bgColor: "bg-purple-50 dark:bg-purple-950/20",
       role: "principal",
-      onClick: () => {
-        localStorage.setItem('selectedRole', 'principal');
-        setLocation("/signup/admin");
-      }
     }
   ];
+
+  const handleSelectRole = (role: string) => {
+    console.log("handleSelectRole called with role:", role);
+    localStorage.setItem('selectedRole', role);
+    setLocation(`/admin-role-select/${role}`);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 flex items-center justify-center p-8">
@@ -60,7 +54,6 @@ export default function AdminSelectionPage() {
             <Card
               key={index}
               className={`p-6 hover:shadow-lg transition-all cursor-pointer ${role.bgColor}`}
-              onClick={role.onClick}
             >
               <div className="flex items-center gap-4">
                 <div className={`w-12 h-12 bg-gradient-to-r ${role.color} rounded-lg flex items-center justify-center`}>
@@ -70,9 +63,13 @@ export default function AdminSelectionPage() {
                   <h3 className="text-lg font-semibold">{role.title}</h3>
                   <p className="text-sm text-muted-foreground">{role.description}</p>
                 </div>
-                <Button variant="outline" size="sm">
-                  Select
-                </Button>
+            <button style={{padding: "0.375rem 0.75rem", border: "1px solid #ccc", borderRadius: "4px", background: "white", cursor: "pointer"}} onClick={(e) => {
+              e.stopPropagation();
+              console.log("Native button clicked for role:", role.role);
+              handleSelectRole(role.role);
+            }}>
+              Select
+            </button>
               </div>
             </Card>
           ))}

@@ -25,6 +25,11 @@ import WorkflowLibraryPage from "@/pages/workflow-library";
 import SettingsPage from "@/pages/settings";
 import NotFound from "@/pages/not-found";
 import { Badge } from "@/components/ui/badge";
+import PrincipalSignupPage from "@/pages/PrincipalSignupPage";
+import DeanSignupPage from "@/pages/DeanSignupPage";
+import PrincipalLoginPage from "@/pages/PrincipalLoginPage";
+import DeanLoginPage from "@/pages/DeanLoginPage";
+import AdminRoleLoginSignupSelectionPage from "@/pages/AdminRoleLoginSignupSelectionPage";
 
 function AppLayout() {
   const [location] = useLocation();
@@ -108,16 +113,24 @@ function AppLayout() {
 
           <main className="flex-1 overflow-auto p-8">
             <Switch>
-              <Route path="/dashboard" component={DashboardPage} />
-              <Route path="/attendance" component={AttendancePage} />
-              <Route path="/documents" component={DocumentsPage} />
-              <Route path="/approvals" component={ApprovalsPage} />
-              <Route path="/workflow-library" component={WorkflowLibraryPage} />
-              <Route path="/tasks" component={TasksPage} />
-              <Route path="/ai-assistant" component={AIAssistantPage} />
-              <Route path="/settings" component={SettingsPage} />
-              <Route component={NotFound} />
-            </Switch>
+              <Route path="/" component={LandingPage} />
+            <Route path="/dashboard" component={DashboardPage} />
+            <Route path="/attendance" component={AttendancePage} />
+            <Route path="/documents" component={DocumentsPage} />
+            <Route path="/approvals" component={ApprovalsPage} />
+            <Route path="/workflow-library" component={WorkflowLibraryPage} />
+            <Route path="/tasks" component={TasksPage} />
+            <Route path="/ai-assistant" component={AIAssistantPage} />
+            <Route path="/settings" component={SettingsPage} />
+            <Route path="/signup/principal" component={PrincipalSignupPage} />
+            <Route path="/signup/dean" component={DeanSignupPage} />
+            <Route path="/signup/hod" component={() => <SignupPage role="hod" />} />
+            <Route path="/login/principal" component={PrincipalLoginPage} />
+            <Route path="/login/dean" component={DeanLoginPage} />
+            <Route path="/login/hod" component={() => <LoginPage role="hod" />} />
+            <Route path="/admin-role-select/:role" component={AdminRoleLoginSignupSelectionPage} />
+            <Route component={NotFound} />
+          </Switch>
           </main>
         </div>
 
@@ -131,7 +144,7 @@ function AppLayout() {
   );
 }
 
-function App() {
+function Website() {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider defaultTheme="light">
@@ -146,4 +159,4 @@ function App() {
   );
 }
 
-export default App;
+export default Website;
